@@ -2,6 +2,7 @@ package uas
 
 import (
 	"encoding/xml"
+	"code.google.com/p/sre2/sre2"
 	"regexp"
 	"strings"
 )
