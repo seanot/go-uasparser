@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 	"regexp"
-	"code.google.com/p/sre2/sre2"
+	// "code.google.com/p/sre2/sre2"
 )
 
 var regMatcher *regexp.Regexp
@@ -14,14 +14,14 @@ func init() {
 	regMatcher = regexp.MustCompile("^/(?P<reg>.*)/(?P<flags>[imsU]*)\\s*$")
 }
 
-// func compileReg(reg string) *regexp.Regexp {
-// 	return regexp.MustCompile(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
-// }
+func compileReg(reg string) *regexp.Regexp {
+	return regexp.MustCompile(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
+}
 
 // I want to replace regexp.MustCompile with sre2.MustParse as it appears to be the equivelant function in sre2
-func compileReg(reg string) *regexp.Regexp {
-	return sre2.MustParse(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
-}
+// func compileReg(reg string) *regexp.Regexp {
+// 	return sre2.MustParse(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
+// }
 
 func compileBrowserRegs(regs []*BrowserReg) {
 	for i, reg := range regs {
