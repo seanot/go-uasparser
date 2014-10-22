@@ -5,55 +5,41 @@ import (
 	"io"
 	"os"
 	"regexp"
-	// "code.google.com/p/sre2/sre2"
+	"code.google.com/p/sre2/sre2"
 )
 
-var regMatcher *regexp.Regexp
+// Error message doesn't like this being a pointer so I pulled the '*' and it cleared the error.
+// I don't understand enough about pointers to understand why.
+var regMatcher sre2.Re
 
+//
 func init() {
-	regMatcher = regexp.MustCompile("^/(?P<reg>.*)/(?P<flags>[imsU]*)\\s*$")
+	regMatcher = sre2.MustParse("^/(?P<reg>.*)/(?P<flags>[imsU]*)\\s*$")
 }
 
-func compileReg(reg string) *regexp.Regexp {
-	return regexp.MustCompile(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
+// return type should probably be something from the sre2 package, but what I do not know
+func compileReg(reg string) *sre2.Re {
+	return sre2.MustParse(regexp.ReplaceAllString(reg, "(?${flags}:${reg})"))
 }
 
-// I want to replace regexp.MustCompile with sre2.MustParse as it appears to be the equivelant function in sre2
-// func compileReg(reg string) *regexp.Regexp {
-// 	return sre2.MustParse(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
-// }
-
-func compileBrowserRegs(regs []*BrowserReg) {
+func compileBrowserRegs(data *Data) {
+	regs := data.BrowsersReg
 	for i, reg := range regs {
 		regs[i].Reg = compileReg(reg.RegString)
 	}
 }
 
-func compileOsRegs(regs []*OsReg) {
+func compileOsRegs(data *Data) {
+	regs := data.OperatingSystemsReg
 	for i, reg := range regs {
 		regs[i].Reg = compileReg(reg.RegString)
 	}
 }
 
-func compileDeviceRegs(regs []*DeviceReg) {
+func compileDeviceRegs(data *Data) {
+	regs := data.DevicesReg
 	for i, reg := range regs {
 		regs[i].Reg = compileReg(reg.RegString)
-	}
-}
-
-func mapBrowserTypeToBrowser(manifest *Manifest) {
-	for _, browser := range manifest.Data.Browsers {
-		browserType, found := manifest.GetBrowserType(browser.TypeId)
-		if !found {
-			browserType = manifest.OtherBrowserType()
-		}
-		browser.Type = browserType
-	}
-}
-
-func mapOsToBrowser(manifest *Manifest) {
-	for _, browser := range manifest.Data.Browsers {
-		browser.Os, _ = manifest.GetOsForBrowser(browser.Id)
 	}
 }
 
@@ -63,11 +49,9 @@ func Load(reader io.Reader) (*Manifest, error) {
 	if err := xml.NewDecoder(reader).Decode(manifest); err != nil {
 		return nil, err
 	}
-	compileBrowserRegs(manifest.Data.BrowsersReg)
-	compileOsRegs(manifest.Data.OperatingSystemsReg)
-	compileDeviceRegs(manifest.Data.DevicesReg)
-	mapBrowserTypeToBrowser(manifest)
-	mapOsToBrowser(manifest)
+	compileBrowserRegs(manifest.Data)
+	compileOsRegs(manifest.Data)
+	compileDeviceRegs(manifest.Data)
 	return manifest, nil
 }
 

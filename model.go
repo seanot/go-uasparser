@@ -18,7 +18,7 @@ const (
 type regEntity struct {
 	Order     int    `xml:"order"`
 	RegString string `xml:"regstring"`
-	Reg       *regexp.Regexp
+	Reg       *sre2.Re
 }
 type entity struct {
 	Id         int    `xml:"id"`
