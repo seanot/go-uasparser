@@ -11,10 +11,15 @@ import (
 var regMatcher *regexp.Regexp
 
 func init() {
-	regMatcher = sre2.MustParse("^/(?P<reg>.*)/(?P<flags>[imsU]*)\\s*$")
+	regMatcher = regexp.MustCompile("^/(?P<reg>.*)/(?P<flags>[imsU]*)\\s*$")
 }
 
-func compileReg(reg string) *sre2.SafeReader {
+// func compileReg(reg string) *regexp.Regexp {
+// 	return regexp.MustCompile(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
+// }
+
+// I want to replace regexp.MustCompile with sre2.MustParse as it appears to be the equivelant function in sre2
+func compileReg(reg string) *regexp.Regexp {
 	return sre2.MustParse(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
 }
 
