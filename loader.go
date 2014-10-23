@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"io"
 	"os"
-	"regexp"
 	"code.google.com/p/sre2/sre2"
 )
 
