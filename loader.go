@@ -17,8 +17,9 @@ func init() {
 }
 
 // return type should probably be something from the sre2 package, but what I do not know
-func compileReg(reg string) *sre2.Re {
-	return sre2.MustParse(regexp.ReplaceAllString(reg, "(?${flags}:${reg})"))
+func compileReg(reg string) *sre2.SafeReader {
+	// return sre2.MustParse(regexp.ReplaceAllString(reg, "(?${flags}:${reg})"))
+	return regMatcher.MatchIndex(?${flags}:${reg})
 }
 
 func compileBrowserRegs(data *Data) {
