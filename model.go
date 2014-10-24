@@ -17,7 +17,7 @@ const (
 type regEntity struct {
 	Order     int    `xml:"order"`
 	RegString string `xml:"regstring"`
-	Reg       *regexp.Regexp
+	Reg       *regexp.regexp						// regexp
 }
 type entity struct {
 	Id         int    `xml:"id"`
@@ -269,7 +269,7 @@ func (self *Manifest) OtherDevice() *Device {
 // a matching Browser and extracts a version string if it can. Returns nil if no
 // match could be found.
 func (self *Manifest) ParseBrowserVersion(ua string) *BrowserVersion {
-	for _, reg := range self.Data.BrowsersReg {
+	for _, reg := range self.Data.BrowsersReg {				// regexp
 		if matches := reg.Reg.FindStringSubmatch(ua); matches != nil {
 			browser, _ := self.GetBrowser(reg.BrowserId)
 			return &BrowserVersion{browser, strings.Join(matches[1:], "/")}
@@ -283,7 +283,7 @@ func (self *Manifest) ParseBrowserVersion(ua string) *BrowserVersion {
 // function. Returns nil if no Device is matched.
 func (self *Manifest) ParseOs(ua string) *Os {
 	for _, reg := range self.Data.OperatingSystemsReg {
-		if reg.Reg.MatchString(ua) {
+		if reg.Reg.MatchString(ua) {					// regexp
 			os, _ := self.GetOs(reg.OsId)
 			return os
 		}
@@ -296,7 +296,7 @@ func (self *Manifest) ParseOs(ua string) *Os {
 // function. Returns nil if no Device is matched.
 func (self *Manifest) ParseDevice(ua string) *Device {
 	for _, reg := range self.Data.DevicesReg {
-		if reg.Reg.MatchString(ua) {
+		if reg.Reg.MatchString(ua) {					// regexp
 			device, _ := self.GetDevice(reg.DeviceId)
 			return device
 		}
