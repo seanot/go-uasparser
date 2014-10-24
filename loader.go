@@ -9,17 +9,20 @@ import (
 
 // Error message doesn't like this being a pointer so I pulled the '*' and it cleared the error.
 // I don't understand enough about pointers to understand why.
-var regMatcher sre2.Re
+var regMatcher *sre2.SafeReader
 
 //
 func init() {
 	regMatcher = sre2.MustParse("^/(?P<reg>.*)/(?P<flags>[imsU]*)\\s*$")
 }
 
+func replaceAllString(src, repl string) string {
+	// write a sre2 replacement for regexp.ReplaceAllString
+}
+
 // return type should probably be something from the sre2 package, but what I do not know
-func compileReg(reg string) *sre2.SafeReader {
-	// return sre2.MustParse(regexp.ReplaceAllString(reg, "(?${flags}:${reg})"))
-	return regMatcher.MatchIndex(?${flags}:${reg})
+func compileReg(reg string) *regexp.Regexp {
+	return regexp.MustCompile(regMatcher.ReplaceAllString(reg, "(?${flags}:${reg})"))
 }
 
 func compileBrowserRegs(data *Data) {

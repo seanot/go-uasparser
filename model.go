@@ -3,7 +3,6 @@ package uas
 import (
 	"encoding/xml"
 	"code.google.com/p/sre2/sre2"
-	"regexp"
 	"strings"
 )
 
@@ -18,7 +17,7 @@ const (
 type regEntity struct {
 	Order     int    `xml:"order"`
 	RegString string `xml:"regstring"`
-	Reg       *regexp.regexp						// regexp
+	Reg       *sre2.SafeReader
 
 }
 type entity struct {
